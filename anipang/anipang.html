@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http:'',//www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>애니팡</title>
+<script type="text/javascript"
+	src="jquery-ui-1.10.3.custom/js/jquery-1.9.1.js"></script>
+<script type="text/javascript"
+	src="jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.js"></script>
+<script type="text/javascript" src="jpopup/jquery.ui-jalert.js"></script>
+<script type="text/javascript" src="anipang.js"></script>
+<link type="text/css" rel="stylesheet"
+	href="jquery-ui-1.10.3.custom/css/ui-lightness/jquery-ui-1.10.3.custom.css" />
+<link type="text/css" rel="stylesheet"
+	href="jpopup/jquery.ui-jalert.css" />
+<style type="text/css">
+#root #background {
+	width: 254px;
+	height: 422px;
+	background-image: url(images/anipang.png);
+	background-repeat: no-repeat;
+}
+
+#root #background #header {
+	width: 254px;
+	height: 96px;
+}
+
+#root #background #center {
+	width: 254px;
+	height: 252px;
+}
+
+#root #background #center .anipang {
+	width: 254px;
+	height: 252px;
+}
+
+#root #background #center .anipang div.animal {
+	width: 32px;
+	height: 30px;
+	background-repeat: no-repeat;
+}
+
+#root #background #center .anipang div.bear {
+	background-image: url(images/bear.png);
+}
+
+#root #background #center .anipang div.cat {
+	background-image: url(images/cat.png);
+}
+
+#root #background #center .anipang div.chicken {
+	background-image: url(images/chicken.png);
+}
+
+#root #background #center .anipang div.monkey {
+	background-image: url(images/monkey.png);
+}
+
+#root #background #center .anipang div.mouse {
+	background-image: url(images/mouse.png);
+}
+
+#root #background #center .anipang div.pig {
+	background-image: url(images/pig.png);
+}
+
+#root #background #center .anipang div.rabbit {
+	background-image: url(images/rabbit.png);
+}
+
+#root #background #footer {
+	width: 254px;
+	height: 74px;
+	position: relative;
+}
+
+#root #background #footer .progressbar {
+	width: 96%;
+	height: 10px;
+	position: absolute;
+	top: 19px;
+	left: 4px;
+}
+</style>
+</head>
+<body>
+	<div id="root">
+		<div id="background">
+			<div id="header"></div>
+			<div id="center">
+				<table id="anipang" class="anipang">
+				</table>
+			</div>
+			<div id="footer">
+				<div id="progressbar" class="progressbar">
+					<!--div class="progress-label">Loading...</div-->
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

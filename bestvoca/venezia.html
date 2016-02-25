@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http:'',//www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+	<script type="text/javascript" src="jquery-1.6.1.min.js"></script>
+	<script type="text/javascript" src="venezia.js"></script>
+	<script type="text/javascript">
+
+		var brokenPosition = [{
+			top:437,
+			left:335 
+		},{
+			top:437,
+			left:303
+		},{
+			top:437,
+			left:271
+		},{
+			top:421,
+			left:335 
+		},{
+			top:421,
+			left:303 
+		},{
+			top:421,
+			left:271
+		},{
+			top:405,
+			left:335 
+		},{
+			top:405,
+			left:303 
+		},{
+			top:405,
+			left:271
+		},{
+			top:389,
+			left:335 
+		},{
+			top:389,
+			left:303
+		},{
+			top:389,
+			left:271
+		}];
+
+		$(document).ready(function() {
+			//단어 객체 생성.
+			var venezia = new Venezia();
+			var vocaKeys = venezia.vocasRandomArr();
+			var $venezia = $("#venezia");
+			var vocas = venezia.vocas();
+			
+			for (var i = 0, vocasLength = vocaKeys.length; i < vocasLength; i+=1) {
+				var element = "<span id="+vocaKeys[i]+">"+ vocaKeys[i] +" : "+ vocas[vocaKeys[i]] +"</span>";
+				$venezia.append(element);
+				var $vocaKey = $("#"+vocaKeys[i]);
+				$vocaKey.addClass("voca");
+				var left = Math.floor(Math.random() * 550);
+				$vocaKey.css("left",left+"px");
+			}
+			
+			var $elements = $venezia.find(".voca");
+			$elements.hide();
+			var time = -7000;
+			var brokenCount = 0;
+
+			$elements.each(function(index) {
+				if(brokenCount == 12) {
+					return false;
+				}
+				var $that = $(this);
+				//단어와 단어사이의 간격 time
+				var timeout = window.setTimeout(function() {
+					$that.show();
+					//단어가 떨어지는 시간
+					$that.animate({
+						top: '+=441'
+					},10000, function() {
+						// Animation complete.
+						$that.hide();
+						if($("#"+$that.attr("id")).text()) {
+							var score = $("#score").text();
+							$("#score").text(Number(score)-1000);
+							$venezia.append("<img id='img"+brokenCount+"'/>");
+							var brokenImgAttr = {
+								src: "broken.png"
+							};
+
+							var brokenImgCss = brokenPosition[brokenCount];						
+							$venezia.find("#img"+brokenCount)
+									.attr(brokenImgAttr)
+									.css(brokenImgCss);
+							brokenCount++;
+						}
+						//console.log(brokenCount);
+				    });
+				},time+=7000);
+					//var position = $that.position();
+			});
+			
+			var vocaInput = $('#voca_input');
+			vocaInput.keydown(function(event) {
+				if (event.which == 13) {
+					event.preventDefault();
+					$("#"+vocaInput.val()).remove();
+					vocaInput.val("");
+					
+					var score = $("#score").text();
+					$("#score").text(Number(score)+1000);
+				}
+			});
+		});
+	</script>
+	
+	<style type="text/css">
+		.venezia {
+			width: 639px;
+			height: 453px;
+			background-color: gray;
+			background-image: url('background.png');
+			position: relative;
+			font-weight: bold;
+			font-size: 13px;
+		}
+		
+		.venezia .voca_input {
+			top: 345px;
+			left: 263px;
+			position: relative;
+			border: 0px;
+			width: 106px;
+			height: 30px;
+			position: absolute;
+		}
+		
+		.venezia .score {
+			top: 20px;
+			left: 390px;
+			position: absolute;
+		}
+
+		.venezia .level {
+			top: 20px;
+			left: 300px;
+			position: absolute;
+		}
+		
+		.venezia .voca, .venezia img {
+			position: absolute;
+		}
+	</style>
+</head>
+<body>
+	<div id="venezia" class="venezia">
+		<span id="level" class="level">1</span>
+		<span id="score" class="score">0</span>
+		<input type="text" id="voca_input" class="voca_input"/>
+		
+		<!--	<span style="top: 10px; left: 100px; position: absolute;">aaaa</span>
+			<span style="top: 10px; left: 100px; position: absolute;">aaaa</span>
+			<span style="position: absolute;">aaaa</span>
+			<span style="position: absolute;">aaaa</span>
+			<span style="position: absolute;">aaaa</span>
+		-->
+
+	</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

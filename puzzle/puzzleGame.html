@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Puzzle game</title>
+	<script type="text/javascript" src="jquery-1.11.1.js"></script>
+	<script>
+	
+		/* Simple JavaScript Inheritance
+		 * By John Resig http://ejohn.org/
+		 * MIT Licensed.
+		 */
+		// Inspired by base2 and Prototype
+		(function(){
+		  var initializing = false, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
+		 
+		  // The base Class implementation (does nothing)
+		  this.Class = function(){};
+		 
+		  // Create a new Class that inherits from this class
+		  Class.extend = function(prop) {
+			var _super = this.prototype;
+		   
+			// Instantiate a base class (but only create the instance,
+			// don't run the init constructor)
+			initializing = true;
+			var prototype = new this();
+			initializing = false;
+		   
+			// Copy the properties over onto the new prototype
+			for (var name in prop) {
+			  // Check if we're overwriting an existing function
+			  prototype[name] = typeof prop[name] == "function" &&
+				typeof _super[name] == "function" && fnTest.test(prop[name]) ?
+				(function(name, fn){
+				  return function() {
+					var tmp = this._super;
+				   
+					// Add a new ._super() method that is the same method
+					// but on the super-class
+					this._super = _super[name];
+				   
+					// The method only need to be bound temporarily, so we
+					// remove it when we're done executing
+					var ret = fn.apply(this, arguments);        
+					this._super = tmp;
+				   
+					return ret;
+				  };
+				})(name, prop[name]) :
+				prop[name];
+			}
+		   
+			// The dummy class constructor
+			function Class() {
+			  // All construction is actually done in the init method
+			  if ( !initializing && this.init )
+				this.init.apply(this, arguments);
+			}
+		   
+			// Populate our constructed prototype object
+			Class.prototype = prototype;
+		   
+			// Enforce the constructor to be what we expect
+			Class.prototype.constructor = Class;
+		 
+			// And make this class extendable
+			Class.extend = arguments.callee;
+		   
+			return Class;
+		  };
+		})();
+
+
+		(function($) {
+			var PuzzleGame = Class.extend({
+			  /**
+				클래스 초기화 시 실행.
+			  */
+			  init: function(maxRowIndex, maxCellIndex) {
+				var self = this;
+				this.createMap(maxRowIndex,maxCellIndex);
+				
+				var pieces = this.puzzleMap.find(".piece");
+				pieces.click(function(e) {
+					self.cellClickAction(e);
+				});
+				
+				this.shufflePiece();
+			  },
+
+			  /**
+				퍼즐 게임에 필요한 맵 생성.
+			  */
+			  createMap : function(maxRowIndex, maxCellIndex) {
+				this.puzzleMap = $("#puzzle-game");	
+				this.puzzleMap.css("width","800px").css("height","600px");
+
+				var table = document.createElement("table");
+				
+				table.style.width = "100%";
+				table.style.height = "100%";
+
+				var puzzleIndex = 0;
+				var self = this;
+				for(var rInd = 0; rInd < maxRowIndex; rInd+=1) {
+					var row = table.insertRow(rInd);
+					$(row).addClass("row").addClass("row_ind_" + rInd);
+					for(var cInd = 0; cInd < maxCellIndex; cInd +=1) {
+						++puzzleIndex;
+						var cell = row.insertCell(cInd);
+						$(cell).addClass("cell" + puzzleIndex)
+								.addClass("cell_id" + puzzleIndex)
+								.addClass("cell_ind" + cInd);
+						
+						var content = document.createElement("div");
+						$(content).addClass("piece")
+								.addClass("piece_id" + puzzleIndex);
+						
+						var colorCodeObj = self.getRandomColorCode();
+						var backgroundColor = colorCodeObj.backgroundColor;
+						var fontColor = colorCodeObj.fontColor;
+						if(puzzleIndex < (maxRowIndex * maxCellIndex)) {
+							$(content).text(puzzleIndex).css({"background-color" : backgroundColor,
+																"width" : "100%",
+																"height" : "100%",
+																"color" : fontColor,
+																"font-size": "120px",
+																"text-align": "center"
+																});
+							cell.appendChild(content);
+						} else {
+							$(cell).addClass("no_piece");
+						}
+					}
+				}
+
+				this.puzzleMap.append(table);
+			  },
+
+			  /**
+				cell 클릭시 발생하는 행동
+			  */
+			  cellClickAction : function(event) {
+				var $targetPiece = $(event.target);
+				$targetCell = $targetPiece.parent();
+				var cellIndex = $targetCell.index();
+				var aroundTarget = {};
+				aroundTarget.leftCell = $targetCell.prev();
+				aroundTarget.rightCell = $targetCell.next();
+
+				$targetRow = $targetCell.parent();
+				aroundTarget.topCell = $targetRow.prev().children().eq(cellIndex);
+				aroundTarget.bottomCell = $targetRow.next().children().eq(cellIndex);
+				
+				$.each(aroundTarget,function(ind, $cell) {
+					var cell = $cell.get(0);
+					if( cell ) {
+						//셀이 가지고 있는 piece가 없을때
+						if($cell.has(".piece").get(0) == null) {
+							$targetCell.addClass("no_piece");
+							$cell.removeClass("no_piece");
+							$cell.append($targetPiece);
+						}
+					}
+				});
+			  },
+
+			  /**
+				퍼즐조각 섞기
+			  */
+			  shufflePiece: function() {
+
+			  },
+			  /**
+				퍼즐조각의 컬러코드 반환
+			  */
+			  getRandomColorCode: function() {
+				var letters = '0123456789ABCDEF'.split('');
+				var color = '';
+				for (var i = 0; i < 6; i++ ) {
+					color += letters[Math.floor(Math.random() * 16)];
+				}
+	
+				var colorCodeObj = {}
+				var backgroundColorNum = parseInt(color, 16);
+
+				colorCodeObj.backgroundColor = "#"+color;
+				colorCodeObj.fontColor = "#000000";
+				if(10000000 > backgroundColorNum) {
+					colorCodeObj.fontColor = "#ffffff";
+				}
+				
+				return colorCodeObj;
+			  }
+			});
+
+			$(document).ready(function() {
+				new PuzzleGame(4,4);
+			});
+		})(jQuery);
+	</script>
+</head>
+<body>
+	<div id="puzzle-game"></div>
+</body>
+</html>
